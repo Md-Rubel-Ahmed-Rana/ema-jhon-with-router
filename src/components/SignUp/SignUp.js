@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { AuthContext } from '../contexts/UserContext';
 import "./SignUp.css"
 const SignUp = () => {
     const [error, setError] = useState("");
-    
+    const {createUser} =   useContext(AuthContext);
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -20,6 +21,16 @@ const SignUp = () => {
             setError("Password is not match");
             return
         }
+
+        createUser(email, password)
+        .then((result) => {
+            const user = result.user;
+            form.reset()
+            console.log(user);
+        })
+        .catch((error) => {
+            console.log(error);
+        })
     }
     return (
         <div className='form-container'>
@@ -27,18 +38,20 @@ const SignUp = () => {
             <form onSubmit={handleSubmit}>
                 <div className="form-control">
                     <label htmlFor="email">Email</label>
-                    <input type="email" name="email" id="" required />
+                    <input type="email" name="email" id="email" required />
                 </div>
                 <div className="form-control">
                     <label htmlFor="password">Password</label>
-                    <input type="password" name="password" id="" required />
+                    <input type="password" name="password" id="password" required />
                 </div>
                 <div className="form-control">
                     <label htmlFor="confirm">Confirm Password</label>
-                    <input type="password" name="confirm" id="" required />
+                    <input type="password" name="confirm" id="confirm" required />
                 </div>
                 <input className='btn-submit' type="submit" value="Sign Up" />
-                <p>{error}</p>
+                {
+                    error ? <p>{error}</p> : ""
+                }
                 <p>Already, have an account? <Link to="/login">Login</Link></p>
             </form>
         </div>
